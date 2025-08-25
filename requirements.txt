@@ -1,0 +1,12 @@
+numpy
+pandas
+matplotlib
+scikit-learn
+seaborn
+joblib
+flask
+flask-cors
+gunicorn
+lightgbm
+requests
+jsonify

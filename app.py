@@ -1,26 +1,29 @@
-from flask import Flask,request,jsonify,render_template
-import numpy as np
+import streamlit as st
 import pickle
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-app=Flask(__name__)
-model=pickle.load(open("model.pkl","rb"))
-scaler=pickle.load(open("scaler.pkl","rb"))
-@app.route('/')
-def home():
-    return render_template("index.html", result=None)
-@app.route('/predict',methods=["GET","POST"])
-def predict():
-    if request.method=="POST":
-        Education=int(request.form.get("Education"))
-        Experience=int(request.form.get("Experience"))
-        Location=int(request.form.get("Location"))
-        Job_title=int(request.form.get("Job_title"))
-        Age=int(request.form.get("Age"))
-        Gender=int(request.form.get("Gender"))
-        new_data=scaler.transform([[Education,Experience,Location,Job_title,Age,Gender]])
-        result=model.predict(new_data)
-        return render_template("index.html",result=str(result[0]))
-if __name__=="__main__":
+import numpy as np
 
-    app.run(debug=True)
+
+
+model , scaler = pickle.load(open('model.sav', 'rb'))
+
+
+st.title("Salary Prediction App")
+
+st.write("Enter the details below to predict the salary.")
+
+
+Education = st.number_input("Education:", min_value=20, max_value=1000, value=100)
+Experience = st.number_input("Experience:", min_value=1, max_value=10, value=2)
+Location = st.number_input("Location:", min_value=1, max_value=3, value=1)
+Job_Title = st.number_input("Job Title:", min_value=1, max_value=20, value=5)
+Age = st.number_input("Age:", min_value=1, max_value=70, value=25)
+Gender = st.number_input("Gender:",min_value=1,max_value=3,value=1)
+features = np.array([[Education,Experience,Location,Job_Title,Age,Gender]])
+
+features_scaled = scaler.transform(features)
+
+if st.button("Predict Price"):
+    prediction = model.predict(features_scaled)
+    st.success(f"Estimated Price: {prediction[0]:,.2f}")
+    
+    
